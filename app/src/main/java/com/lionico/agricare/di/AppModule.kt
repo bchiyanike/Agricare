@@ -1,4 +1,4 @@
-package com.lionico.template.di
+package com.lionico.agricare.di
 
 import android.content.Context
 import dagger.Module

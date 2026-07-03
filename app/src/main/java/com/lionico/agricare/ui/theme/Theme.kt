@@ -1,4 +1,4 @@
-package com.lionico.template.ui.theme
+package com.lionico.agricare.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
