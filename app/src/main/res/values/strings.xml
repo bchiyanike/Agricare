@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- app/src/main/res/values/strings.xml -->
+<!-- ========================================= -->
+<!-- Version: v1.0 -->
+<!-- Last Edited: 2026-07-03 17:40 UTC -->
+<!-- Agent: AgriCare Dev Agent -->
+<!-- Active Context: Stage 1 – Enterprise Setup. Adding enterprise-related strings. -->
+<!-- Impact Radius: None -->
+<!-- Changelog: -->
+<!-- - v1.0: Added enterprise_setup_title, enterprise_name_label, error_empty_name, save. -->
+<!-- ========================================= -->
+
 <resources>
     <string name="app_name">Agricare</string>
 
@@ -6,4 +17,10 @@
     <string name="loading">Loading…</string>
     <string name="error_generic">Something went wrong</string>
     <string name="retry">Retry</string>
+
+    <!-- Enterprise Setup -->
+    <string name="enterprise_setup_title">Set Up Your Enterprise</string>
+    <string name="enterprise_name_label">Enterprise name</string>
+    <string name="error_empty_name">Name cannot be empty</string>
+    <string name="save">Save</string>
 </resources>
