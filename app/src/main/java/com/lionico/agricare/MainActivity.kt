@@ -1,11 +1,12 @@
 // app/src/main/java/com/lionico/agricare/MainActivity.kt
 // =========================================
-// Version: v1.0
-// Last Edited: 2026-07-03 17:50 UTC
+// Version: v1.1
+// Last Edited: 2026-07-04 01:00 UTC
 // Agent: AgriCare Dev Agent
-// Active Context: Stage 1 – Enterprise Setup. Replacing template with splash-check and enterprise/dashboard switch.
+// Active Context: Stage 1 – Enterprise Setup. Fixing unresolved reference to getEnterprise() by using Flow.first().
 // Impact Radius: None
 // Changelog:
+// - v1.1: Replaced repository.getEnterprise() with repository.observeEnterprise().first(); added import for kotlinx.coroutines.flow.first.
 // - v1.0: Removed static TEMPLATE screen; added enterprise existence check via repository and composable switching.
 // =========================================
 
@@ -27,6 +28,7 @@ import com.lionico.agricare.ui.setup.EnterpriseSetupScreen
 import com.lionico.agricare.ui.setup.EnterpriseUiState
 import com.lionico.agricare.ui.theme.LionicoTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -51,7 +53,7 @@ class MainActivity : ComponentActivity() {
                     val coroutineScope = rememberCoroutineScope()
 
                     LaunchedEffect(Unit) {
-                        val enterprise = repository.getEnterprise()
+                        val enterprise = repository.observeEnterprise().first()
                         showSetup = enterprise == null
                     }
 
