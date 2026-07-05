@@ -1,12 +1,13 @@
 // app/src/main/java/com/lionico/agricare/di/AppModule.kt
 // =========================================
-// Version: v1.0
-// Last Edited: 2026-07-03 17:30 UTC
+// Version: v1.1
+// Last Edited: 2026-07-05 10:34 UTC
 // Agent: AgriCare Dev Agent
-// Active Context: Stage 1 – Enterprise Setup. Providing Room database and EnterpriseRepository.
-// Impact Radius: None (adds new providers, no existing callers broken)
+// Active Context: Extended enterprise setup – providing new DAOs.
+// Impact Radius: None (adds providers, Hilt resolves new repositories automatically)
 // Changelog:
-// - v1.0: Added @Provides for AgricareDatabase and EnterpriseRepository.
+// - v1.1: Added FieldDao, WorkerDao, InventoryDao providers; added fallbackToDestructiveMigration for dev.
+// - v1.0: Added @Provides for AgricareDatabase and EnterpriseDao.
 // =========================================
 
 package com.lionico.agricare.di
@@ -15,7 +16,9 @@ import android.content.Context
 import androidx.room.Room
 import com.lionico.agricare.data.local.AgricareDatabase
 import com.lionico.agricare.data.local.dao.EnterpriseDao
-import com.lionico.agricare.data.repository.EnterpriseRepository
+import com.lionico.agricare.data.local.dao.FieldDao
+import com.lionico.agricare.data.local.dao.WorkerDao
+import com.lionico.agricare.data.local.dao.InventoryDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,14 +37,20 @@ object AppModule {
             context,
             AgricareDatabase::class.java,
             "agricare_db"
-        ).build()
+        )
+        .fallbackToDestructiveMigration() // dev only – wipes data on schema change
+        .build()
     }
 
     @Provides
-    fun provideEnterpriseDao(database: AgricareDatabase): EnterpriseDao {
-        return database.enterpriseDao()
-    }
+    fun provideEnterpriseDao(database: AgricareDatabase): EnterpriseDao = database.enterpriseDao()
 
-    // The repository is already @Singleton via its annotation and Hilt can inject it directly,
-    // but we can also provide it here if needed (optional). We'll let Hilt construct it directly.
+    @Provides
+    fun provideFieldDao(database: AgricareDatabase): FieldDao = database.fieldDao()
+
+    @Provides
+    fun provideWorkerDao(database: AgricareDatabase): WorkerDao = database.workerDao()
+
+    @Provides
+    fun provideInventoryDao(database: AgricareDatabase): InventoryDao = database.inventoryDao()
 }
