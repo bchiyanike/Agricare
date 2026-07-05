@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- app/src/main/res/values/strings.xml -->
 <!-- ========================================= -->
-<!-- Version: v1.0 -->
-<!-- Last Edited: 2026-07-03 17:40 UTC -->
+<!-- Version: v1.1 -->
+<!-- Last Edited: 2026-07-05 10:50 UTC -->
 <!-- Agent: AgriCare Dev Agent -->
-<!-- Active Context: Stage 1 – Enterprise Setup. Adding enterprise-related strings. -->
+<!-- Active Context: Extended enterprise setup – wizard strings. -->
 <!-- Impact Radius: None -->
 <!-- Changelog: -->
+<!-- - v1.1: Added wizard step labels, skip, summary, field/worker/inventory strings. -->
 <!-- - v1.0: Added enterprise_setup_title, enterprise_name_label, error_empty_name, save. -->
 <!-- ========================================= -->
 
@@ -23,4 +24,34 @@
     <string name="enterprise_name_label">Enterprise name</string>
     <string name="error_empty_name">Name cannot be empty</string>
     <string name="save">Save</string>
+
+    <!-- Wizard -->
+    <string name="step_x_of_5">Step %1$d of 5</string>
+    <string name="back">Back</string>
+    <string name="next">Next</string>
+    <string name="skip_for_now">Skip for now</string>
+    <string name="go_to_dashboard">Go to Dashboard</string>
+    <string name="setup_complete">Setup complete</string>
+    <string name="summary_title">Summary</string>
+
+    <!-- Field Setup -->
+    <string name="fields_setup_title">Fields</string>
+    <string name="field_name_label">Field name</string>
+    <string name="field_size_label">Size (ha)</string>
+    <string name="environment_label">Environment</string>
+    <string name="irrigation_label">Irrigation</string>
+    <string name="add_field">Add Field</string>
+
+    <!-- Worker Setup -->
+    <string name="workers_setup_title">Workers</string>
+    <string name="worker_name_label">Worker name</string>
+    <string name="add_worker">Add Worker</string>
+
+    <!-- Inventory Setup -->
+    <string name="inventory_setup_title">Initial Inventory</string>
+    <string name="item_name_label">Item name</string>
+    <string name="quantity_label">Quantity</string>
+    <string name="unit_label">Unit (e.g., kg, liters)</string>
+    <string name="category_label">Category</string>
+    <string name="add_item">Add Item</string>
 </resources>
