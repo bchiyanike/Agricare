@@ -1,11 +1,12 @@
 // app/src/main/java/com/lionico/agricare/MainActivity.kt
 // =========================================
-// Version: v1.2
-// Last Edited: 2026-07-05 10:52 UTC
+// Version: v1.3
+// Last Edited: 2026-07-05 11:10 UTC
 // Agent: AgriCare Dev Agent
-// Active Context: Extended enterprise setup – dashboard placeholder with completion flags.
+// Active Context: Extended enterprise setup – wiring EnterpriseViewModel for real wizard interaction.
 // Impact Radius: None
 // Changelog:
+// - v1.3: Replaced dummy callbacks with EnterpriseViewModel; activity now observes ViewModel state to decide setup vs dashboard.
 // - v1.2: Added TODO to pass enterprise flags to dashboard; no functional change.
 // - v1.1: Replaced getEnterprise() with observeEnterprise().first().
 // - v1.0: Removed static TEMPLATE screen; added enterprise existence check.
@@ -24,20 +25,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.lionico.agricare.data.repository.EnterpriseRepository
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.lionico.agricare.ui.setup.EnterpriseSetupScreen
 import com.lionico.agricare.ui.setup.EnterpriseSetupUiState
+import com.lionico.agricare.ui.setup.EnterpriseViewModel
 import com.lionico.agricare.ui.theme.LionicoTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    @Inject
-    lateinit var repository: EnterpriseRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -50,16 +46,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    var showSetup by remember { mutableStateOf<Boolean?>(null) }
-                    val coroutineScope = rememberCoroutineScope()
+                    val viewModel: EnterpriseViewModel = hiltViewModel()
+                    val uiState by viewModel.uiState.collectAsState()
 
-                    LaunchedEffect(Unit) {
-                        val enterprise = repository.observeEnterprise().first()
-                        showSetup = enterprise == null
-                    }
-
-                    when (showSetup) {
-                        null -> {
+                    when (uiState) {
+                        is EnterpriseSetupUiState.Loading -> {
                             Box(
                                 modifier = Modifier.fillMaxSize(),
                                 contentAlignment = Alignment.Center
@@ -67,30 +58,39 @@ class MainActivity : ComponentActivity() {
                                 CircularProgressIndicator()
                             }
                         }
-                        true -> {
-                            // Full wizard – EnterpriseSetupScreen will handle its own state
+                        is EnterpriseSetupUiState.Wizard -> {
                             EnterpriseSetupScreen(
-                                uiState = EnterpriseSetupUiState.Loading, // will be replaced by ViewModel inside
-                                onSetName = {},
-                                onAddField = {},
-                                onRemoveField = {},
-                                onAddWorker = {},
-                                onRemoveWorker = {},
-                                onAddInventoryItem = {},
-                                onRemoveInventoryItem = {},
-                                onGoToStep = {},
-                                onSkipSection = {},
-                                onCompleteSetup = {}
+                                uiState = uiState,
+                                onSetName = viewModel::setName,
+                                onAddField = viewModel::addField,
+                                onRemoveField = viewModel::removeField,
+                                onAddWorker = viewModel::addWorker,
+                                onRemoveWorker = viewModel::removeWorker,
+                                onAddInventoryItem = viewModel::addInventoryItem,
+                                onRemoveInventoryItem = viewModel::removeInventoryItem,
+                                onGoToStep = viewModel::goToStep,
+                                onSkipSection = viewModel::skipCurrentSection,
+                                onCompleteSetup = viewModel::completeSetup
                             )
-                            // TODO: inject ViewModel instead of dummy callbacks
                         }
-                        false -> {
-                            // Dashboard placeholder – later check enterprise completion flags
+                        is EnterpriseSetupUiState.Done -> {
+                            // Placeholder dashboard – later can show completion status
                             Box(
                                 modifier = Modifier.fillMaxSize(),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(stringResource(R.string.app_name))
+                            }
+                        }
+                        is EnterpriseSetupUiState.Error -> {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = (uiState as EnterpriseSetupUiState.Error).message,
+                                    color = MaterialTheme.colorScheme.error
+                                )
                             }
                         }
                     }
