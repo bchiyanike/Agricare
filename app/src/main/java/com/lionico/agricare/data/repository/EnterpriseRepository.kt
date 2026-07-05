@@ -1,11 +1,12 @@
 // app/src/main/java/com/lionico/agricare/data/repository/EnterpriseRepository.kt
 // =========================================
-// Version: v1.0
-// Last Edited: 2026-07-03 17:15 UTC
+// Version: v1.1
+// Last Edited: 2026-07-05 10:40 UTC
 // Agent: AgriCare Dev Agent
-// Active Context: Stage 1 – Enterprise Setup. Repository wrapping EnterpriseDao.
-// Impact Radius: EnterpriseViewModel.kt (will depend on this)
+// Active Context: Extended enterprise setup – upsert now accepts setup flags.
+// Impact Radius: EnterpriseViewModel (uses the new upsert overload)
 // Changelog:
+// - v1.1: Added upsertEnterprise overload with setup‑completion booleans.
 // - v1.0: Initial creation – exposes observe and upsert for the enterprise.
 // =========================================
 
@@ -24,8 +25,22 @@ class EnterpriseRepository @Inject constructor(
     fun observeEnterprise(): Flow<EnterpriseEntity?> = enterpriseDao.observeEnterprise()
 
     suspend fun upsertEnterprise(name: String) {
+        enterpriseDao.upsertEnterprise(EnterpriseEntity(name = name))
+    }
+
+    suspend fun upsertEnterprise(
+        name: String,
+        fieldsComplete: Boolean,
+        workersComplete: Boolean,
+        inventoryComplete: Boolean
+    ) {
         enterpriseDao.upsertEnterprise(
-            EnterpriseEntity(name = name)
+            EnterpriseEntity(
+                name = name,
+                fieldsSetupComplete = fieldsComplete,
+                workersSetupComplete = workersComplete,
+                inventorySetupComplete = inventoryComplete
+            )
         )
     }
 }
