@@ -1,11 +1,12 @@
 // app/src/main/java/com/lionico/agricare/ui/setup/EnterpriseViewModel.kt
 // =========================================
-// Version: v1.1
-// Last Edited: 2026-07-05 10:38 UTC
+// Version: v1.2
+// Last Edited: 2026-07-05 11:20 UTC
 // Agent: AgriCare Dev Agent
-// Active Context: Extended enterprise setup – multi‑step wizard state.
-// Impact Radius: EnterpriseSetupScreen.kt (new composable structure)
+// Active Context: Hotfix – non‑exhaustive when in skipCurrentSection() causing compile error.
+// Impact Radius: None
 // Changelog:
+// - v1.2: Added missing else branch in skipCurrentSection() to fix compilation.
 // - v1.1: Replaced simple name‑only state with full wizard state (step index, fields/workers/inventory lists, skip flags).
 // - v1.0: Initial creation – exposes UiState, handles upsert.
 // =========================================
@@ -57,7 +58,6 @@ class EnterpriseViewModel @Inject constructor(
         viewModelScope.launch {
             val enterprise = enterpriseRepo.observeEnterprise().first()
             if (enterprise != null) {
-                // Enterprise already exists – skip to done (shouldn't normally happen)
                 _uiState.value = EnterpriseSetupUiState.Done
             } else {
                 _uiState.value = EnterpriseSetupUiState.Wizard(
@@ -137,6 +137,7 @@ class EnterpriseViewModel @Inject constructor(
                     1 -> old.copy(fieldsSkipped = true)
                     2 -> old.copy(workersSkipped = true)
                     3 -> old.copy(inventorySkipped = true)
+                    else -> old // steps 0,4 shouldn't be skipped, no change
                 }
             } else old
         }
@@ -151,22 +152,18 @@ class EnterpriseViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val state = _uiState.value as EnterpriseSetupUiState.Wizard
-                // Save enterprise
                 enterpriseRepo.upsertEnterprise(
                     name = state.enterpriseName,
                     fieldsComplete = !state.fieldsSkipped && state.fields.isNotEmpty(),
                     workersComplete = !state.workersSkipped && state.workers.isNotEmpty(),
                     inventoryComplete = !state.inventorySkipped && state.inventoryItems.isNotEmpty()
                 )
-                // Save fields if not skipped
                 if (!state.fieldsSkipped) {
                     state.fields.forEach { fieldRepo.addField(it) }
                 }
-                // Save workers if not skipped
                 if (!state.workersSkipped) {
                     state.workers.forEach { workerRepo.addWorker(it) }
                 }
-                // Save inventory if not skipped
                 if (!state.inventorySkipped) {
                     state.inventoryItems.forEach { inventoryRepo.addItem(it) }
                 }
