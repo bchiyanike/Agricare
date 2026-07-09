@@ -1,11 +1,12 @@
 // app/src/main/java/com/lionico/agricare/ui/field/FieldScreen.kt
 // =========================================
-// Version: v1.0
-// Last Edited: 2026-07-05 12:05 UTC
+// Version: v1.1
+// Last Edited: 2026-07-09 12:25 UTC
 // Agent: AgriCare Dev Agent
-// Active Context: Stage 2 – Field Management. Stateless composable with add/edit/delete.
-// Impact Radius: MainActivity.kt (will host), strings.xml (needs strings)
+// Active Context: Stage 2 – Field Management. Hotfix type inference error for selectedDeleteAction.
+// Impact Radius: None
 // Changelog:
+// - v1.1: Fixed type inference in selectedDeleteAction to allow any FieldDeleteAction.
 // - v1.0: Initial creation – field list, add dialog, 4‑option delete dialog, edit support.
 // =========================================
 
@@ -42,7 +43,7 @@ fun FieldScreen(
     var showAddDialog by remember { mutableStateOf(false) }
     var editingField by remember { mutableStateOf<FieldEntity?>(null) }
     var deletingField by remember { mutableStateOf<FieldEntity?>(null) }
-    var selectedDeleteAction by remember { mutableStateOf(FieldDeleteAction.ResetData) }
+    var selectedDeleteAction by remember { mutableStateOf<FieldDeleteAction>(FieldDeleteAction.ResetData) }
 
     Scaffold(
         modifier = modifier,
