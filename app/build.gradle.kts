@@ -1,4 +1,14 @@
 // app/build.gradle.kts
+// =========================================
+// Version: v1.1
+// Last Edited: 2026-07-13 10:52 UTC
+// Agent: AgriCare Dev Agent
+// Active Context: Stage 3 – Inventory. Added hilt-work dependency.
+// Impact Radius: None
+// Changelog:
+// - v1.1: Added implementation(libs.hilt.work) for @HiltWorker support.
+// - v1.0: Initial build configuration.
+// =========================================
 
 plugins {
     alias(libs.plugins.android.application)
@@ -83,6 +93,7 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.hilt.work)   // added
 
     // Room
     implementation(libs.androidx.room.runtime)
