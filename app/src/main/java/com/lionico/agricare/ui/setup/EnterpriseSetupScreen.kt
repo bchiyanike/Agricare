@@ -1,11 +1,12 @@
 // app/src/main/java/com/lionico/agricare/ui/setup/EnterpriseSetupScreen.kt
 // =========================================
-// Version: v1.1
-// Last Edited: 2026-07-05 10:45 UTC
+// Version: v1.2
+// Last Edited: 2026-07-13 11:10 UTC
 // Agent: AgriCare Dev Agent
-// Active Context: Extended enterprise setup – multi‑step wizard with skip.
-// Impact Radius: strings.xml (needs new strings)
+// Active Context: Stage 3 – Inventory. Fixing InventoryEntity constructor parameter.
+// Impact Radius: None
 // Changelog:
+// - v1.2: Changed quantity to bookQuantity in InventoryStep to match new entity.
 // - v1.1: Replaced single‑field screen with a 4‑step wizard (name, fields, workers, inventory) + summary.
 // - v1.0: Initial creation – stateless Compose screen with name input and save.
 // =========================================
@@ -67,7 +68,6 @@ fun EnterpriseSetupScreen(
             )
         }
         is EnterpriseSetupUiState.Done -> {
-            // This screen won't be shown after setup, but just in case
             Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(stringResource(R.string.setup_complete))
             }
@@ -91,7 +91,6 @@ private fun WizardContent(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxSize().padding(24.dp)) {
-        // Step indicator
         Text(
             text = stringResource(R.string.step_x_of_5, state.currentStep + 1),
             style = MaterialTheme.typography.labelLarge,
@@ -129,7 +128,6 @@ private fun WizardContent(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // Navigation buttons
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -198,7 +196,6 @@ private fun FieldsStep(
     Spacer(modifier = Modifier.height(8.dp))
     OutlinedTextField(fieldName, { fieldName = it }, label = { Text(stringResource(R.string.field_name_label)) })
     OutlinedTextField(size, { size = it }, label = { Text(stringResource(R.string.field_size_label)) })
-    // simple dropdowns for enums (using a button with a menu)
     EnumDropdown(
         label = stringResource(R.string.environment_label),
         selected = environment,
@@ -227,7 +224,7 @@ private fun FieldsStep(
         itemsIndexed(fields) { index, field ->
             Text("${field.name} - ${field.sizeHa} ha")
             IconButton(onClick = { onRemove(index) }) {
-                Text("X") // placeholder
+                Text("X")
             }
         }
     }
@@ -278,7 +275,7 @@ private fun InventoryStep(
     Button(
         onClick = {
             val qty = quantity.toDoubleOrNull() ?: 0.0
-            onAdd(InventoryEntity(category = category, name = itemName, quantity = qty, unit = unit))
+            onAdd(InventoryEntity(category = category, name = itemName, bookQuantity = qty, unit = unit))
             itemName = ""; quantity = ""; unit = ""
         },
         enabled = itemName.isNotBlank()
@@ -287,7 +284,7 @@ private fun InventoryStep(
     }
     LazyColumn {
         itemsIndexed(items) { index, item ->
-            Text("${item.name} - ${item.quantity} ${item.unit}")
+            Text("${item.name} - ${item.bookQuantity} ${item.unit}")
             IconButton(onClick = { onRemove(index) }) { Text("X") }
         }
     }
