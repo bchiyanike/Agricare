@@ -1,12 +1,13 @@
 // app/src/main/java/com/lionico/agricare/data/local/AgricareDatabase.kt
 // =========================================
-// Version: v1.1
-// Last Edited: 2026-07-05 10:32 UTC
+// Version: v1.2
+// Last Edited: 2026-07-13 09:16 UTC
 // Agent: AgriCare Dev Agent
-// Active Context: Extended enterprise setup – new entities and DAOs.
-// Impact Radius: AppModule.kt (needs new DAO providers)
+// Active Context: Stage 3 – Inventory. Added StockCheckEntity; bumped version to 3.
+// Impact Radius: AppModule (new DAO provider)
 // Changelog:
-// - v1.1: Added FieldEntity, WorkerEntity, InventoryEntity and their DAOs; bumped version to 2.
+// - v1.2: Added StockCheckEntity, StockCheckDao; version 3.
+// - v1.1: Added FieldEntity, WorkerEntity, InventoryEntity and their DAOs; version 2.
 // - v1.0: Initial creation – database with EnterpriseEntity and EnterpriseDao.
 // =========================================
 
@@ -18,19 +19,22 @@ import com.lionico.agricare.data.local.dao.EnterpriseDao
 import com.lionico.agricare.data.local.dao.FieldDao
 import com.lionico.agricare.data.local.dao.WorkerDao
 import com.lionico.agricare.data.local.dao.InventoryDao
+import com.lionico.agricare.data.local.dao.StockCheckDao
 import com.lionico.agricare.data.local.entity.EnterpriseEntity
 import com.lionico.agricare.data.local.entity.FieldEntity
 import com.lionico.agricare.data.local.entity.WorkerEntity
 import com.lionico.agricare.data.local.entity.InventoryEntity
+import com.lionico.agricare.data.local.entity.StockCheckEntity
 
 @Database(
     entities = [
         EnterpriseEntity::class,
         FieldEntity::class,
         WorkerEntity::class,
-        InventoryEntity::class
+        InventoryEntity::class,
+        StockCheckEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class AgricareDatabase : RoomDatabase() {
@@ -38,4 +42,5 @@ abstract class AgricareDatabase : RoomDatabase() {
     abstract fun fieldDao(): FieldDao
     abstract fun workerDao(): WorkerDao
     abstract fun inventoryDao(): InventoryDao
+    abstract fun stockCheckDao(): StockCheckDao
 }
