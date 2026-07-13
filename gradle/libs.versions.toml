@@ -1,12 +1,22 @@
 # gradle/libs.versions.toml
+# =========================================
+# Version: v1.1
+# Last Edited: 2026-07-13 10:50 UTC
+# Agent: AgriCare Dev Agent
+# Active Context: Stage 3 – Inventory. Adding hilt-work dependency.
+# Impact Radius: app/build.gradle.kts
+# Changelog:
+# - v1.1: Added hiltWork version and library entry for hilt-work.
+# - v1.0: Initial version catalog.
+# =========================================
 
 [versions]
-agp = "8.7.2"                    # verify: latest stable AGP
-kotlin = "2.1.0"                 # verify: latest stable Kotlin 2.x
+agp = "8.7.2"
+kotlin = "2.1.0"
 coreKtx = "1.15.0"
 lifecycleRuntimeKtx = "2.9.0"
 activityCompose = "1.10.0"
-composeBom = "2025.01.01"        # verify: latest stable BOM
+composeBom = "2025.01.01"
 splashscreen = "1.0.1"
 junit = "4.13.2"
 androidxJunit = "1.2.1"
@@ -15,9 +25,10 @@ googleAds = "23.6.0"
 kotlinxSerializationJson = "1.7.3"
 
 hilt = "2.54"
-ksp = "2.1.0-1.0.29"            # must mirror kotlin version — verify pair
+ksp = "2.1.0-1.0.29"
 room = "2.7.0"
 hiltNavigationCompose = "1.2.0"
+hiltWork = "1.2.0"                       # added
 workRuntime = "2.10.0"
 
 [libraries]
@@ -44,6 +55,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltWork" }   # added
 
 # Room
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
