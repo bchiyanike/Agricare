@@ -1,11 +1,12 @@
 // app/src/main/java/com/lionico/agricare/data/repository/InventoryRepository.kt
 // =========================================
-// Version: v1.0
-// Last Edited: 2026-07-05 10:22 UTC
+// Version: v1.1
+// Last Edited: 2026-07-13 09:14 UTC
 // Agent: AgriCare Dev Agent
-// Active Context: Extended enterprise setup – InventoryRepository.
-// Impact Radius: EnterpriseSetupViewModel (future use)
+// Active Context: Stage 3 – Inventory. Exposing new DAO methods and low-stock flow.
+// Impact Radius: InventoryViewModel (future)
 // Changelog:
+// - v1.1: Added lowStockItems flow, updateBookQuantity, updatePhysicalQuantity.
 // - v1.0: Initial creation – wraps InventoryDao.
 // =========================================
 
@@ -23,9 +24,13 @@ class InventoryRepository @Inject constructor(
 ) {
     fun observeAllItems(): Flow<List<InventoryEntity>> = inventoryDao.getAllItems()
 
+    fun observeLowStockItems(): Flow<List<InventoryEntity>> = inventoryDao.getLowStockItems()
+
     suspend fun addItem(item: InventoryEntity): Long = inventoryDao.insertItem(item)
 
-    suspend fun updateQuantity(id: Long, quantity: Double) = inventoryDao.updateQuantity(id, quantity)
+    suspend fun updateBookQuantity(id: Long, quantity: Double) = inventoryDao.updateBookQuantity(id, quantity)
+
+    suspend fun updatePhysicalQuantity(id: Long, quantity: Double) = inventoryDao.updatePhysicalQuantity(id, quantity)
 
     suspend fun deleteItem(item: InventoryEntity) = inventoryDao.deleteItem(item)
 }
