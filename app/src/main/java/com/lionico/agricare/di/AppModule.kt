@@ -1,24 +1,28 @@
 // app/src/main/java/com/lionico/agricare/di/AppModule.kt
 // =========================================
-// Version: v1.1
-// Last Edited: 2026-07-05 10:34 UTC
+// Version: v1.2
+// Last Edited: 2026-07-13 09:18 UTC
 // Agent: AgriCare Dev Agent
-// Active Context: Extended enterprise setup – providing new DAOs.
-// Impact Radius: None (adds providers, Hilt resolves new repositories automatically)
+// Active Context: Stage 3 – Inventory. Added StockCheckDao provider and HiltWorkerFactory for upcoming workers.
+// Impact Radius: None (WorkManager config will be used by future workers)
 // Changelog:
-// - v1.1: Added FieldDao, WorkerDao, InventoryDao providers; added fallbackToDestructiveMigration for dev.
+// - v1.2: Added StockCheckDao provider; added WorkManager Hilt integration.
+// - v1.1: Added FieldDao, WorkerDao, InventoryDao providers; added fallbackToDestructiveMigration.
 // - v1.0: Added @Provides for AgricareDatabase and EnterpriseDao.
 // =========================================
 
 package com.lionico.agricare.di
 
 import android.content.Context
+import androidx.hilt.work.HiltWorkerFactory
 import androidx.room.Room
+import androidx.work.Configuration
 import com.lionico.agricare.data.local.AgricareDatabase
 import com.lionico.agricare.data.local.dao.EnterpriseDao
 import com.lionico.agricare.data.local.dao.FieldDao
 import com.lionico.agricare.data.local.dao.WorkerDao
 import com.lionico.agricare.data.local.dao.InventoryDao
+import com.lionico.agricare.data.local.dao.StockCheckDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,7 +42,7 @@ object AppModule {
             AgricareDatabase::class.java,
             "agricare_db"
         )
-        .fallbackToDestructiveMigration() // dev only – wipes data on schema change
+        .fallbackToDestructiveMigration()
         .build()
     }
 
@@ -53,4 +57,15 @@ object AppModule {
 
     @Provides
     fun provideInventoryDao(database: AgricareDatabase): InventoryDao = database.inventoryDao()
+
+    @Provides
+    fun provideStockCheckDao(database: AgricareDatabase): StockCheckDao = database.stockCheckDao()
+
+    @Provides
+    @Singleton
+    fun provideWorkManagerConfiguration(): Configuration {
+        return Configuration.Builder()
+            .setWorkerFactory(HiltWorkerFactory())
+            .build()
+    }
 }
