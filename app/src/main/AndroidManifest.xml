@@ -1,7 +1,20 @@
-<!-- File: app/src/main/AndroidManifest.xml -->
+<?xml version="1.0" encoding="utf-8"?>
+<!-- app/src/main/AndroidManifest.xml -->
+<!-- ========================================= -->
+<!-- Version: v1.1 -->
+<!-- Last Edited: 2026-07-13 10:24 UTC -->
+<!-- Agent: AgriCare Dev Agent -->
+<!-- Active Context: Stage 3 – Inventory. Added POST_NOTIFICATIONS permission. -->
+<!-- Impact Radius: None -->
+<!-- Changelog: -->
+<!-- - v1.1: Added POST_NOTIFICATIONS permission for Android 13+. -->
+<!-- - v1.0: Initial manifest with splash, Internet, singleTop, etc. -->
+<!-- ========================================= -->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".LionicoApplication"
