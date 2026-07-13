@@ -1,12 +1,13 @@
 // app/src/main/java/com/lionico/agricare/di/AppModule.kt
 // =========================================
-// Version: v1.2
-// Last Edited: 2026-07-13 09:18 UTC
+// Version: v1.3
+// Last Edited: 2026-07-13 11:05 UTC
 // Agent: AgriCare Dev Agent
-// Active Context: Stage 3 – Inventory. Added StockCheckDao provider and HiltWorkerFactory for upcoming workers.
-// Impact Radius: None (WorkManager config will be used by future workers)
+// Active Context: Stage 3 – Inventory. Fixing HiltWorkerFactory integration.
+// Impact Radius: LionicoApplication.kt (now handles WorkManager config)
 // Changelog:
-// - v1.2: Added StockCheckDao provider; added WorkManager Hilt integration.
+// - v1.3: Removed invalid provideWorkManagerConfiguration(); HiltWorkerFactory will be provided by Application.
+// - v1.2: Added StockCheckDao provider; added WorkManager Hilt integration (now removed).
 // - v1.1: Added FieldDao, WorkerDao, InventoryDao providers; added fallbackToDestructiveMigration.
 // - v1.0: Added @Provides for AgricareDatabase and EnterpriseDao.
 // =========================================
@@ -14,9 +15,7 @@
 package com.lionico.agricare.di
 
 import android.content.Context
-import androidx.hilt.work.HiltWorkerFactory
 import androidx.room.Room
-import androidx.work.Configuration
 import com.lionico.agricare.data.local.AgricareDatabase
 import com.lionico.agricare.data.local.dao.EnterpriseDao
 import com.lionico.agricare.data.local.dao.FieldDao
@@ -60,12 +59,4 @@ object AppModule {
 
     @Provides
     fun provideStockCheckDao(database: AgricareDatabase): StockCheckDao = database.stockCheckDao()
-
-    @Provides
-    @Singleton
-    fun provideWorkManagerConfiguration(): Configuration {
-        return Configuration.Builder()
-            .setWorkerFactory(HiltWorkerFactory())
-            .build()
-    }
 }
