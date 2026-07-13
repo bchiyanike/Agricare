@@ -1,12 +1,13 @@
 // app/src/main/java/com/lionico/agricare/LionicoApplication.kt
 // =========================================
-// Version: v1.1
-// Last Edited: 2026-07-13 10:22 UTC
+// Version: v1.2
+// Last Edited: 2026-07-13 11:08 UTC
 // Agent: AgriCare Dev Agent
-// Active Context: Stage 3 – Inventory. Notification channels & WorkManager periodic workers.
-// Impact Radius: AndroidManifest (permission already added)
+// Active Context: Stage 3 – Inventory. Fixing HiltWorkerFactory integration.
+// Impact Radius: None (configuration change)
 // Changelog:
-// - v1.1: Created notification channels, enqueued LowStockWorker (daily) and StockCheckReminderWorker (monthly).
+// - v1.2: Implemented Configuration.Provider to use HiltWorkerFactory.
+// - v1.1: Created notification channels, enqueued periodic workers.
 // - v1.0: Hilt application shell.
 // =========================================
 
@@ -15,6 +16,8 @@ package com.lionico.agricare
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -22,9 +25,18 @@ import com.lionico.agricare.worker.LowStockWorker
 import com.lionico.agricare.worker.StockCheckReminderWorker
 import dagger.hilt.android.HiltAndroidApp
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @HiltAndroidApp
-class LionicoApplication : Application() {
+class LionicoApplication : Application(), Configuration.Provider {
+
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
 
     override fun onCreate() {
         super.onCreate()
