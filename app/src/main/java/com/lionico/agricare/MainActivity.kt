@@ -1,11 +1,12 @@
 // app/src/main/java/com/lionico/agricare/MainActivity.kt
 // =========================================
-// Version: v1.4
-// Last Edited: 2026-07-09 12:15 UTC
+// Version: v1.5
+// Last Edited: 2026-07-13 10:20 UTC
 // Agent: AgriCare Dev Agent
-// Active Context: Stage 2 – Field Management. Replacing placeholder dashboard with FieldScreen.
+// Active Context: Stage 3 – Inventory UI. Added bottom‑bar navigation between Fields and Inventory.
 // Impact Radius: None
 // Changelog:
+// - v1.5: Replaced single FieldScreen with tabbed dashboard (Fields / Inventory).
 // - v1.4: Done branch now shows FieldScreen; imported FieldViewModel and FieldScreen.
 // - v1.3: Replaced dummy callbacks with EnterpriseViewModel; activity observes ViewModel state.
 // - v1.2: Added TODO to pass enterprise flags to dashboard; no functional change.
@@ -24,10 +25,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lionico.agricare.ui.field.FieldScreen
 import com.lionico.agricare.ui.field.FieldViewModel
+import com.lionico.agricare.ui.inventory.InventoryScreen
+import com.lionico.agricare.ui.inventory.InventoryViewModel
 import com.lionico.agricare.ui.setup.EnterpriseSetupScreen
 import com.lionico.agricare.ui.setup.EnterpriseSetupUiState
 import com.lionico.agricare.ui.setup.EnterpriseViewModel
@@ -76,14 +80,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         is EnterpriseSetupUiState.Done -> {
-                            val fieldViewModel: FieldViewModel = hiltViewModel()
-                            val fieldState by fieldViewModel.uiState.collectAsState()
-                            FieldScreen(
-                                uiState = fieldState,
-                                onAddField = fieldViewModel::addField,
-                                onUpdateField = fieldViewModel::updateField,
-                                onDeleteField = fieldViewModel::deleteField
-                            )
+                            DashboardTabs()
                         }
                         is EnterpriseSetupUiState.Error -> {
                             Box(
@@ -99,6 +96,50 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun DashboardTabs() {
+    var selectedTab by remember { mutableIntStateOf(0) }
+    val fieldViewModel: FieldViewModel = hiltViewModel()
+    val fieldState by fieldViewModel.uiState.collectAsState()
+    val inventoryViewModel: InventoryViewModel = hiltViewModel()
+    val inventoryState by inventoryViewModel.uiState.collectAsState()
+
+    Scaffold(
+        bottomBar = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                TextButton(onClick = { selectedTab = 0 }) {
+                    Text(stringResource(R.string.tab_fields))
+                }
+                TextButton(onClick = { selectedTab = 1 }) {
+                    Text(stringResource(R.string.tab_inventory))
+                }
+            }
+        }
+    ) { padding ->
+        when (selectedTab) {
+            0 -> FieldScreen(
+                uiState = fieldState,
+                onAddField = fieldViewModel::addField,
+                onUpdateField = fieldViewModel::updateField,
+                onDeleteField = fieldViewModel::deleteField,
+                modifier = Modifier.padding(padding)
+            )
+            1 -> InventoryScreen(
+                uiState = inventoryState,
+                onSelectCategory = inventoryViewModel::selectCategory,
+                onAddItem = inventoryViewModel::addItem,
+                onUpdateItem = inventoryViewModel::updateItem,
+                onDeleteItem = inventoryViewModel::deleteItem,
+                onStockCheck = inventoryViewModel::performStockCheck,
+                modifier = Modifier.padding(padding)
+            )
         }
     }
 }
