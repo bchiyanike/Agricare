@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- app/src/main/res/values/strings.xml -->
 <!-- ========================================= -->
-<!-- Version: v1.2 -->
-<!-- Last Edited: 2026-07-09 12:18 UTC -->
+<!-- Version: v1.3 -->
+<!-- Last Edited: 2026-07-13 10:26 UTC -->
 <!-- Agent: AgriCare Dev Agent -->
-<!-- Active Context: Stage 2 – Field Management. Adding field-screen strings. -->
+<!-- Active Context: Stage 3 – Inventory. Added inventory UI and notification strings. -->
 <!-- Impact Radius: None -->
 <!-- Changelog: -->
+<!-- - v1.3: Added inventory screen, stock check, low stock warning, notification channels, tab labels, etc. -->
 <!-- - v1.2: Added delete/cancel/confirm/edit/no_fields_yet/active_crop/delete dialog strings. -->
 <!-- - v1.1: Added wizard step labels, skip, summary, field/worker/inventory strings. -->
 <!-- - v1.0: Added enterprise_setup_title, enterprise_name_label, error_empty_name, save. -->
@@ -69,4 +70,30 @@
     <string name="delete_deactivate_crop_keep_history">Remove current crop, keep history</string>
     <string name="delete_deactivate_crop_delete_history">Remove current crop and history</string>
     <string name="delete_field_entirely">Delete field entirely</string>
+
+    <!-- Tabs -->
+    <string name="tab_fields">Fields</string>
+    <string name="tab_inventory">Inventory</string>
+
+    <!-- Inventory Screen -->
+    <string name="category_all">All</string>
+    <string name="edit_item">Edit Item</string>
+    <string name="no_items_yet">No items yet. Tap + to add one.</string>
+    <string name="low_stock_warning">Low stock!</string>
+    <string name="min_threshold_label">Min. threshold</string>
+    <string name="stock_check">Stock Check</string>
+    <string name="stock_check_title">Stock Check: %1$s</string>
+    <string name="book_quantity">Book quantity</string>
+    <string name="actual_quantity">Actual quantity</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_low_stock">low_stock</string>
+    <string name="notification_channel_low_stock_name">Low Stock Alerts</string>
+    <string name="notification_channel_low_stock_desc">Notifies when inventory items fall below minimum threshold.</string>
+    <string name="notification_channel_reminders">reminders</string>
+    <string name="notification_channel_reminders_name">Reminders</string>
+    <string name="notification_channel_reminders_desc">Monthly stock check reminders.</string>
+    <string name="low_stock_notification_title">Low Stock Alert</string>
+    <string name="stock_check_reminder_title">Monthly Stock Check Due</string>
+    <string name="stock_check_reminder_body">Time to reconcile actual stock with book records.</string>
 </resources>
