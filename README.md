@@ -1,72 +1,122 @@
-## **HOW TO USE THE TEMPLATE**
+# AgriCare 🌱
 
-### **Method 1: Quick Start (Recommended)**
+**AgriCare** is a modern, local-first Android application designed for farmers and agricultural enterprises. It streamlines operations by offering guided business setup, fields and environmental classification, workforce organization, and real-time inventory management with physical stock audit logging and low-threshold automated alerts.
 
-```bash
-# 1. Clone the template
-git clone https://github.com/bchiyanike/Template.git MyNewProject
+---
 
-# 2. Navigate into it
-cd MyNewProject
+## 🚀 Core Features
 
-# 3. Remove old git history
-rm -rf .git
+### 1. Guided Enterprise Setup Wizard 🧙‍♂️
+*   **Step-by-Step Onboarding:** Interactive wizard to establish your agricultural enterprise profile.
+*   **Modular Setup Configuration:** Separate steps for naming the enterprise, registering cultivating fields, adding workers, and pre-loading inventory items.
+*   **Progress Indicators:** Built-in modular flags (`fieldsSetupComplete`, `workersSetupComplete`, `inventorySetupComplete`) allow sections to be skipped and completed post-setup.
 
-# 4. Initialize new repository
-git init
-git add .
-git commit -m "Initial commit from template"
+### 2. Field Management & Cultivation tracking 🚜
+*   **Hectare Tracking:** Log physical field dimensions accurately in hectares.
+*   **Environmental Classification:** Classify fields by type:
+    *   `OPEN_FIELD`
+    *   `GREENHOUSE`
+    *   `SHADE_NET`
+*   **Irrigation Infrastructure:** Tag irrigation methods utilized:
+    *   `DRIP`
+    *   `SPRINKLER`
+    *   `FLOOD`
+*   **Active Crop Association:** Tie fields to current crops being cultivated.
 
-# 5. Create new repo on GitHub (do this on github.com)
-# Then connect it:
-git remote add origin https://github.com/bchiyanike/MyNewProject.git
-git branch -M main
-git push -u origin main
+### 3. Inventory Management & Material Audits 📦
+*   **Categorization:** Group inputs into structured categories:
+    *   `SEED`
+    *   `FERTILIZER`
+    *   `PESTICIDE`
+    *   `FUNGICIDE`
+    *   `OTHER`
+*   **Double-entry Quantities:** Tracks both **Book Quantity** (system transactions) and **Physical Quantity** (real-world audits).
+*   **Minimum Threshold Warnings:** Configure critical replenishment stock levels.
+*   **Physical Stock Checks:** Conduct reconciliation audits. Any deviation is logged in the custom historical database table (`stock_check`) with automatic variance calculation.
 
-# 6. Run the rename workflow on GitHub
-# Go to: Actions → Rename Template → Run workflow
-# Enter:
-#   Old name: template
-#   New name: mynewproject
-#   App name: MyNewProject
+### 4. Background Processing & Intelligent Notifications 🔔
+*   **Low Stock Monitor (`LowStockWorker`):** Runs periodically via WorkManager to inspect inventory. Automatically pushes system notifications if items drop below their minimum thresholds.
+*   **Stock Check Reminders (`StockCheckReminderWorker`):** Automated monthly reminders prompting managers to perform physical stock checks to minimize variance.
 
-# 7. Pull the changes
-git pull origin main
+---
 
-# 8. Build and run
-./gradlew clean build
+## 🛠 Tech Stack & Architecture
+
+AgriCare is built using modern Android development practices:
+
+*   **Language:** Kotlin (JVM 17 Toolchain)
+*   **UI Framework:** Jetpack Compose (Declarative UI, Material Design 3 via `LionicoTheme`)
+*   **Architecture Pattern:** Clean MVVM (Model-View-ViewModel) with structured domain segregation:
+    *   *View Layer:* Compose Screens & Composables.
+    *   *ViewModel Layer:* UI state management utilizing Kotlin Coroutines Flows.
+    *   *Repository Layer:* Single source of truth abstracting Local DB DAOs.
+    *   *Data Layer (Room DB):* SQLite ORM representing relational farm data.
+*   **Dependency Injection:** Dagger Hilt (with Hilt‑Work integration for Worker dependencies)
+*   **Database:** Room (v3, featuring custom TypeConverters for LocalDate dates)
+*   **Background Jobs:** Android WorkManager
+
+---
+
+## 📂 Project Architecture
+
+```text
+app/src/main/java/com/lionico/agricare/
+├── LionicoApplication.kt       # Application initialization and WorkManager queue setup
+├── MainActivity.kt             # Single activity entry point with custom Compose Tab Navigation
+├── data/
+│   ├── local/                  # Room local database implementation
+│   │   ├── AgricareDatabase.kt # Room Database definition (v3)
+│   │   ├── Converters.kt       # LocalDate Type Converters
+│   │   ├── dao/                # Enterprise, Field, Inventory, StockCheck, and Worker DAOs
+│   │   └── entity/             # Relational entities and categories (Enums)
+│   └── repository/             # Repositories exposing flow-based local data
+├── di/
+│   └── AppModule.kt            # Hilt Module providing Database, DAOs, and Repositories
+├── ui/                         # Presentation Layer
+│   ├── field/                  # Field list, create/update screens & FieldViewModel
+│   ├── inventory/              # Inventory management, audits, category filter & InventoryViewModel
+│   ├── setup/                  # Enterprise multi-step wizard & EnterpriseViewModel
+│   └── theme/                  # Theme configuration (Colors, Typography, Shape, and Theme)
+└── worker/                     # WorkManager background tasks (LowStockWorker & StockCheckReminderWorker)
 ```
 
 ---
 
-### **Method 2: Use GitHub's "Use This Template" Button**
+## 🏁 Getting Started
 
-```bash
-# 1. On GitHub, go to: github.com/bchiyanike/Template
+### Prerequisites
+*   Android Studio (Ladybug or newer recommended)
+*   JDK 17 installed and configured in your environment
+*   Android SDK Platform 35
 
-# 2. Click green "Use this template" button → "Create a new repository"
+### Running the App
 
-# 3. Enter:
-#    Repository name: MyNewProject
-#    Description: (optional)
-#    Public/Private
+1.  **Clone the Repository**
+    ```bash
+    git clone https://github.com/lionico/Agricare.git
+    cd Agricare
+    ```
 
-# 4. Click "Create repository"
+2.  **Build the Project**
+    Assemble the debug package using the Gradle wrapper:
+    ```bash
+    ./gradlew assembleDebug
+    ```
 
-# 5. Clone your new repo
-git clone https://github.com/bchiyanike/MyNewProject.git
-cd MyNewProject
+3.  **Run Tests**
+    Run the unit test suite:
+    ```bash
+    ./gradlew test
+    ```
 
-# 6. Run the rename workflow (same as Method 1, step 6)
-
-# 7. Pull and build (same as Method 1, steps 7-8)
-```
+4.  **Install & Run**
+    Deploy directly to a connected Android emulator or physical device:
+    ```bash
+    ./gradlew installDebug
+    ```
 
 ---
 
-### **Summary**
+## 🔒 Security & Offline-First
 
-1. **Clone** template → **Remove** .git → **Init** new repo → **Push** to GitHub
-2. **Run workflow** on GitHub (Actions tab) to rename package
-3. **Pull** changes → **Build** project
-4. Start coding! 🚀
+AgriCare is designed as an **offline-first** application. All operational farm data (field parameters, active crop IDs, employee logs, material volumes, and historical audit entries) are stored securely on-device inside a local SQLite database using Room. No internet connection is required to run daily farm audits or check inventory levels, ensuring utility in remote farming fields.
